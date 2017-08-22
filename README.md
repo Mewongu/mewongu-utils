@@ -5,7 +5,7 @@ Examples:
 Timed context:
 ```python
 >>> from time import sleep
->>> from utils import timed_ctx
+>>> from mewongu_utils import timed_ctx
 >>>
 >>> with timed_ctx(msg='It took:'):
 ...     sleep(1.5)
@@ -16,7 +16,7 @@ It took: 1.5052039623260498
 Timed function:
 ```python
 >>> from time import sleep
->>> from utils import timed
+>>> from mewongu_utils import timed
 >>>
 >>> @timed(msg='Call took:')
 ... def my_fn():
