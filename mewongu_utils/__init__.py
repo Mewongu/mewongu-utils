@@ -1,6 +1,7 @@
 # mewongu_utils
 # Author: Andreas Stenberg
-
+import collections
+from collections import MutableMapping
 from time import time, sleep
 from functools import wraps
 import os
@@ -72,3 +73,38 @@ def tail(filename, check_interval=1):
             pass
         finally:
             sleep(check_interval)
+
+
+class KeyChangeDict(dict):
+    """
+    A class that allows you to extend it and modify key behaviour in dicts
+    """
+    def __init__(self, *args, **kwargs):
+        self.update(*args, **kwargs)
+
+    def __getitem__(self, key):
+        return super(KeyChangeDict, self).__getitem__(self._key_modifier(key))
+
+    def __setitem__(self, key, value):
+        return super(KeyChangeDict, self).__setitem__(self._key_modifier(key), value)
+
+    def __delitem__(self, key):
+        return super(KeyChangeDict, self).__delitem__(self._key_modifier(key))
+
+    def get(self, key, default=None):
+        return super(KeyChangeDict, self).get(self._key_modifier(key), default)
+
+    def setdefault(self, key, default=None):
+        return super(KeyChangeDict, self).setdefault(self._key_modifier(key), default)
+
+    def pop(self, key):
+        return super(KeyChangeDict, self).pop(self._key_modifier(key))
+
+    def __contains__(self, key):
+        return super(KeyChangeDict, self).__contains__(self._key_modifier(key))
+
+    def copy(self):
+        return type(self)(self)
+
+    def _key_modifier(self, key):
+        return key
