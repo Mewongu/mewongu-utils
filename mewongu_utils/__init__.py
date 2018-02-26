@@ -1,6 +1,8 @@
 # mewongu_utils
 # Author: Andreas Stenberg
+import cProfile
 import collections
+import pstats
 from collections import MutableMapping
 from time import time, sleep
 from functools import wraps
@@ -108,3 +110,19 @@ class KeyChangeDict(dict):
 
     def _key_modifier(self, key):
         return key
+
+
+class profiled_ctx:
+    def __init__(self, file_name, directory=None):
+        self.file_name = file_name
+        self.directory = directory or './'
+        self.pr = cProfile.Profile()
+
+    def __enter__(self):
+        self.pr.enable()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.pr.disable()
+        file_path = os.path.join(self.directory, f'{self.file_name}.pstat')
+        pstats.Stats(self.pr).dump_stats(file_path)
+
